@@ -13,8 +13,7 @@ namespace{
 	};
 	class Engine_Info{
 		public:
-			Engine_Info(int rpm, double load){this->rpm = rpm; this->engine_load = load; this->errors = std::vector<error>();
-				this->errors.push_back(sample_error);}
+			Engine_Info(int rpm, double load){this->rpm = rpm; this->engine_load = load; this->errors = std::vector<error>();}
 			int get_rpm() {return this->rpm;}
 			double get_load() {return this->engine_load;}
 			std::vector<error> get_errors(){return this->errors;}
