@@ -7,6 +7,8 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <socket_functions.h>
 
+// Created library shmaro for use in python
+// def ...; are functions in header file
 BOOST_PYTHON_MODULE(shmaro)
 {
 	using namespace boost::python;

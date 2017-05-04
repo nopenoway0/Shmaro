@@ -9,12 +9,20 @@
 #include <fcntl.h>
 
 int main(int args, char* argv[]){
+	// Instantiate pipes, variables, buffers.
+	// Make sure all pipes are created correctly before the fork
 	pid_t pid;
 	int r_w_pipe[2];
 	int w_r_pipe[2];
 	int result = pipe2(r_w_pipe, O_NONBLOCK);
-	result = pipe2(w_r_pipe, O_NONBLOCK);
 	char buffer[10240] = {0};
+
+	if(result == -1){
+		std::cerr << "Could not form pipe " << strerror(errno) << std::endl;
+		exit(4);
+	}
+
+	result = pipe2(w_r_pipe, O_NONBLOCK);
 
 	if(result == -1){
 		std::cerr << "Could not form pipe " << strerror(errno) << std::endl;
@@ -72,6 +80,7 @@ int main(int args, char* argv[]){
 			}
 			std::cout << ".";
 			std::cout.flush();
+			// If while loop isn't broken, error_string was returned. Keep scanning
 			write(r_w_pipe[1], "scan\n", strlen("scan\n"));
 			sleep(1);
 		}

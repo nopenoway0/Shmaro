@@ -28,10 +28,8 @@ namespace{
 	std::vector<Engine_Info> info_list;
 	bool server_done;
 
-	void handler(const boost::system::error_code& error, std::size_t bytes_transferred){
-		exit(3);
-	}
-
+	// Synchronously reads from server
+	// Will keep connection open until packets are recieved
 	void start_server(){
 		io_service.reset();
 		server_done = false;
@@ -39,7 +37,6 @@ namespace{
 		boost::array<Engine_Info, 5> buffer;
 		udp::endpoint main_endpoint;
 		connector.receive_from(boost::asio::buffer(buffer), main_endpoint);
-		//std::cout << buffer.data();
 		for(int x = 0; x < buffer.size(); x++){
 				if(buffer.data()[x].get_flag() == ENGINE_END){
 					server_done = true;
@@ -52,6 +49,7 @@ namespace{
 			}
 		}
 
+	// Doesn't work yet
 	void stop_server(){
 		server_done = true;
 		connector.close();
@@ -59,6 +57,7 @@ namespace{
 		connector.close();
 	}
 
+	// Retrieves objects and clears list to prevent large sizes and redundancy
 	std::vector<Engine_Info> get_list(){
 		_eng_access.lock();
 		std::vector<Engine_Info> tmp_list = info_list;

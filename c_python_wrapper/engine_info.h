@@ -12,6 +12,8 @@
 namespace{
 	#define ENGINE_END 1
 	#define UNITIALIZED 2
+	// Error codes will be stored in this struct will contain
+	// Error description as "name" and corresponding numeric code
 	struct error{
 		std::string name;
 		int number;
@@ -19,6 +21,7 @@ namespace{
 			return (a.number == this->number);
 		}
 	};
+	// Class to contain info. Incomplete will contain more information that scantool extracts
 	class Engine_Info{
 		public:
 			Engine_Info(int rpm, double load, int flag){this->rpm = rpm; this->engine_load = load; this->errors = std::vector<error>(); this->flag = flag;}
@@ -39,6 +42,8 @@ namespace{
 			int flag;
 	};
 
+	// makes class "pickelable"
+	// e.g. lets python break it down into bytes and put it into shared memory
 	struct engine_info_pickle_suite : boost::python::pickle_suite{
 		static boost:: python::tuple getinitargs(Engine_Info& e){
 			using namespace boost::python;
