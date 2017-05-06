@@ -13,7 +13,7 @@
 
 //#define _WIN32_WINNT                  0x0A00
 namespace{
-
+	#define BUFFER_SIZE 5
 	using boost::asio::ip::udp;
 
 	/*
@@ -34,10 +34,10 @@ namespace{
 		io_service.reset();
 		server_done = false;
 		size_t len = 0;
-		boost::array<Engine_Info, 5> buffer;
+		boost::array<Engine_Info, BUFFER_SIZE> buffer;
 		udp::endpoint main_endpoint;
 		connector.receive_from(boost::asio::buffer(buffer), main_endpoint);
-		for(int x = 0; x < buffer.size(); x++){
+		for(int x = 0; x < BUFFER_SIZE; x++){
 				if(buffer.data()[x].get_flag() == ENGINE_END){
 					server_done = true;
 				}
