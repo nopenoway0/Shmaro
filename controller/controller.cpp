@@ -58,7 +58,7 @@ int main(int args, char* argv[]){
 		// Error message of last scan attempt when using ELM interface
 		// will need to add other messages for other interfaces
 		char error_string[] = 	"Please check :\n\tAdapter is connected to PC\n\tCable is connected to Vehicle\n\tVehicle is switched on\n\tVehicle is OBDII compliant";
-
+		char connected_string[] = "Connection to ECU established";
 		// Start read for failed scan. Continue read until nothing is left in buffer
 		// If buffer then contains either of the flagger "error codes" - scan has failed.
 		// Wait 4 second and try again
@@ -68,25 +68,41 @@ int main(int args, char* argv[]){
 		int count;
 		int waiter = 0; // TODO: replace this terrible way to check with select()
 		// Prepare for asyncrhonous read operation
-		while(waiter < 5 || (strstr(buffer, error_string) == NULL)){
+		// Essentially times out in 30 seconds
+		while(waiter < 30){
+			memset(buffer, 0, sizeof(buffer));			
 			count = read(w_r_pipe[0], buffer, sizeof(buffer));
 			if(count < 1){
 				if(errno = EAGAIN){
+					waiter += 1;
+				}else if(count == 0){
+					// Nothing to read - e.g. read 0 bytes
 					waiter += 1;
 				}
 			}
 			else{
 				waiter = 0;
 			}
+			std::cout << buffer;
 			std::cout << ".";
 			std::cout.flush();
 			// If while loop isn't broken, error_string was returned. Keep scanning
-			write(r_w_pipe[1], "scan\n", strlen("scan\n"));
+			if(strstr(buffer, error_string) != NULL){
+			//	sleep(3);
+				std::cout << std::endl << "No Connection Found. Restarting Scan";
+				std::cout.flush();
+				write(r_w_pipe[1], "scan\n", strlen("scan\n"));
+			}
+			else if(strstr(buffer, connected_string) != NULL){
+				waiter = 0;
+				break;
+			}
 			sleep(1);
 		}
 		// scan is either connected or timed out
-		if(waiter >=5){
+		if(waiter >= 30){
 			//scan failed
+			std::cerr << "Scan failed";
 		}
 		/**
 		* Sucessful connection
@@ -94,10 +110,13 @@ int main(int args, char* argv[]){
 		* ClearTDC on request, pull error codes, trigger monitor command and stream
 		*/
 		else{
-			std::cout << std::endl << "Connection Found" << std::endl;
+			std::cout << std::endl << "CONNECTION FOUND" << std::endl;
+			//start scan
+			write(r_w_pipe[1], "monitor\n", strlen("monitor\n"));		
+			// Pull information from terminal here:
+			// Use parser?	
 			// get error codes using "pids" command
 			// ask to clear dtc(optional)
-			// start realtime monitoring
 		}
 		//quitting here
 		std::cout << std::endl<< "Shutting down Scantool";
