@@ -1,4 +1,7 @@
 make:
-	g++ controller.cpp -lrt
+	g++ -I /usr/include/python2.7 -I../c_python_wrapper/ controller.cpp -lrt -lpython2.7 -lboost_python
+
+parser:
+	g++ -std=c++11 -I /usr/include/python2.7 -I../c_python_wrapper/ -I./ monitor_parser.cpp -o monitor.out -lrt -lpython2.7 -lboost_python
 clean:
 	rm -f *.out .o
