@@ -24,20 +24,74 @@ namespace{
 	// Class to contain info. Incomplete will contain more information that scantool extracts
 	class Engine_Info{
 		public:
-			Engine_Info(int rpm, double load, int flag){this->rpm = rpm; this->engine_load = load; this->errors = std::vector<error>(); this->flag = flag;}
-			Engine_Info(int rpm, double load){this->rpm = rpm; this->engine_load = load; this->errors = std::vector<error>(); this->flag = 0;}
-			Engine_Info(){Engine_Info(0,0); this->flag = UNITIALIZED;}
+			Engine_Info(int rpm, float load, bool fuel_status, float coolant_tmp, float speed, float intake_tmp, float airflow, float throttle_position, float ltrim, 
+				float strim, int flag){this->rpm = rpm; this->engine_load = load; this->fuel_status = fuel_status;
+											this->coolant_tmp = coolant_tmp; this->speed = speed; this->intake_tmp = intake_tmp; this->airflow = airflow; this->throttle_position = throttle_position;
+											this->ltrim = ltrim; this->strim = strim; this->flag = flag;}
+			
+			Engine_Info(int rpm, float load, int flag){Engine_Info(rpm, load, false, 0, 0, 0, 0, 0, 0, 0,flag);}
+
+			Engine_Info(int rpm, float load){Engine_Info(rpm, load, 0);}
+
+			Engine_Info(){Engine_Info(0,0, UNITIALIZED); this->flag = UNITIALIZED;}
+
 			int get_rpm() {return this->rpm;}
-			double get_load() {return this->engine_load;}
-			//void set_flag(int flag) {this->flag = flag;}
+			void set_rpm(int rpm){this->rpm = rpm;}
+
+			float get_load() {return this->engine_load;}
+			void set_load(float load) {this->engine_load = load;}
+
+			void set_flag(int flag) {this->flag = flag;}
 			int get_flag() {return this->flag;}
+
 			std::vector<error> get_errors(){return this->errors;}
+			
+			float get_airflow(){return this->airflow;}
+			void set_airflow(float airflow){this->airflow = airflow;}
+
+			float get_throttle(){return this->throttle_position;}
+			void set_throttle(float throttle){this->throttle_position = throttle;}
+
+			float get_ltrim(){return this->ltrim;}
+			void set_ltrim(float ltrim){this->ltrim = ltrim;}
+
+			float get_strim(){return this->strim;}
+			void set_strim(float strim){this->strim = strim;}
+
+			float get_coolant_tmp(){return this->coolant_tmp;}
+			void set_coolant_tmp(float coolant_tmp){this->coolant_tmp = coolant_tmp;}
+
+			float get_speed(){return this->speed;}
+			void set_speed(float speed){this->speed = speed;}
+
+			float get_intake_tmp(){return this->intake_tmp;}
+			void set_intake_tmp(float intake){this->intake_tmp = intake;}
+
+			bool get_fuel_status(){return this->fuel_status;}
+			void set_fuel_status(bool status){this->fuel_status = status;}
+
 			bool operator==(Engine_Info a){
 				return this->rpm == a.get_rpm() && this->engine_load == a.get_load() && this->flag == a.get_flag();
 			}
+/*
+			std::ostream& operator<<(std::ostream& outputStream){
+				outputStream << "Engine Info Object- RPM: " << this->get_rpm() << "\nEngine Load: " << this->get_load();
+				outputStream << "\nFuel Status: " << this->get_fuel_status() << "\nIntake Temperature: " << this->get_intake_tmp();
+				outputStream << "\nSpeed: " << this->get_speed() << "\nCoolant Temp: " << this->get_coolant_tmp() << "\nLong Trim: ";
+				outputStream << this->get_ltrim() << "\nShort Trim: " << this->get_strim() << "\nThrottle: " << this->get_throttle() << "\nAirflow: " << this->get_airflow();
+				return outputStream;
+			}*/
 		private:
+			float airflow;
+			float throttle_position;
+			float ltrim;
+			float strim;
+			float coolant_tmp;
+			float speed;
+			float intake_tmp;
+			bool fuel_status;
 			int rpm;
-			double engine_load;
+			float engine_load;
 			std::vector<error> errors;
 			int flag;
 	};
