@@ -6,7 +6,8 @@
 
 int main(){
 	// Populate test string
-	std::string test_input("Parameter                      Current         FreezeFrame\nFuel System Status             Open            -----          \nCalculated Load Value            4.6%          -----          \nEngine Coolant Temperature      46C            -----          ");
+	std::string test_input("Requesting Mode 1 Pid 0x0F...\nRequesting Mode 1 Pid 0x10...\nRequesting Mode 1 Pid 0x11...\nRequesting Mode 1 Pid 0x13...");
+	test_input += "Requesting Mode 1 Pid 0x15...\nRequesting Mode 1 Pid 0x1C...Parameter\n                      Current         FreezeFrame\nFuel System Status             Open            -----          \nCalculated Load Value            4.6%          -----          \nEngine Coolant Temperature      46C            -----          ";
 	test_input += "\nShort term fuel trim Bank 1      0.0%         -----          \nLong term fuel trim Bank 1       6.2%         -----          ";
 	test_input += "\nEngine RPM                         0RPM        -----          \nVehicle Speed                    0km/h         -----          ";
 	test_input += "\nIgnition timing advance Cyl #1  0.0 deg        -----          \nIntake Air Temperature          37C            -----          ";
