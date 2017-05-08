@@ -37,6 +37,7 @@ int main(int argc, char* argv[]){
 
 		//add Engine Info
 		buffer[0] = Engine_Info(1,2.0);
+		buffer[0].set_flag(0);
 		buffer[1] = Engine_Info(1,3.1);
 		buffer[2] = Engine_Info(3,2.3);
 		buffer[3] = Engine_Info(323, 4);
@@ -56,7 +57,7 @@ int main(int argc, char* argv[]){
 			buffer[x] = Engine_Info();
 		}
 		buffer[0] = Engine_Info(3,2.3,1);
-		//buffer[0].set_flag(ENGINE_END);
+		buffer[0].set_flag(ENGINE_END);
 		connector.send_to(boost::asio::buffer(buffer), main_endpoint);
 
 
