@@ -13,11 +13,9 @@ def Shmaro_Communicator(shared, done):
 		# Call it everytime you need to have the socket
 		# open
 		shmaro.start_server()
-
 		# get list retrieves a list of engine objects
 		obj = shmaro.get_list()
 		obj_list = []
-
 		# The list is not native and must be converted so python can put them in shared
 		# memory
 		for x in range(0, len(obj)):
@@ -26,7 +24,7 @@ def Shmaro_Communicator(shared, done):
 			if(obj[x].get_flag() == 1):
 				done = True
 		# Put list into shared memory to be retrieved by main process
-		shared.put(obj_list)
+			shared.put(obj_list)
 	shared.put(True)
 	exit(0)
 
@@ -38,20 +36,23 @@ if __name__=='__main__':
 	p1 = Process(target=Shmaro_Communicator, args=(shared,done))
 	p1.start()
 	num = 0
-	while(True):
+	while(done is False):
 		try:
 			tr = any
 			tr = shared.get()
 			if(tr == True):
+				done = True
 				break
 			if(tr != 0):
 				for x in range(0, len(tr)):
 					print("RPM: " + str(tr[x].get_rpm()) + " LD: " + str(tr[x].get_load()))
 				print("")
+			else:
+				time.sleep(1)
 		except Empty:
-			pass
-		except:
-			exit(0)
+			print "ERROR"
+		#except:
+		#	print "ERrror"
 			
 		#lock.release()
 	p1.terminate()
