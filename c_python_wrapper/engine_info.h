@@ -24,16 +24,18 @@ namespace{
 	// Class to contain info. Incomplete will contain more information that scantool extracts
 	class Engine_Info{
 		public:
-			Engine_Info(int rpm, float load, bool fuel_status, float coolant_tmp, float speed, float intake_tmp, float airflow, float throttle_position, float ltrim, 
+			Engine_Info():Engine_Info(0,0,UNITIALIZED){}
+
+			Engine_Info(int rpm, float load):Engine_Info(rpm, load, 0){}
+
+			Engine_Info(int rpm, float load, int flag):Engine_Info(rpm, load, false, 0, 0, 0, 0, 0, 0, 0,flag){}
+
+			Engine_Info(int rpm, float load, bool fuel_status, float coolant_tmp, float speed, float intake_tmp, float airflow, float throttle_position, float ltrim,
 				float strim, int flag){this->rpm = rpm; this->engine_load = load; this->fuel_status = fuel_status;
 											this->coolant_tmp = coolant_tmp; this->speed = speed; this->intake_tmp = intake_tmp; this->airflow = airflow; this->throttle_position = throttle_position;
 											this->ltrim = ltrim; this->strim = strim; this->flag = flag;}
 			
-			Engine_Info(int rpm, float load, int flag){Engine_Info(rpm, load, false, 0, 0, 0, 0, 0, 0, 0,flag);}
 
-			Engine_Info(int rpm, float load){Engine_Info(rpm, load, 0);}
-
-			Engine_Info(){Engine_Info(0,0, UNITIALIZED); this->flag = UNITIALIZED;}
 
 			int get_rpm() {return this->rpm;}
 			void set_rpm(int rpm){this->rpm = rpm;}
@@ -71,7 +73,9 @@ namespace{
 			void set_fuel_status(bool status){this->fuel_status = status;}
 
 			bool operator==(Engine_Info a){
-				return this->rpm == a.get_rpm() && this->engine_load == a.get_load() && this->flag == a.get_flag();
+				return this->rpm == a.get_rpm() && this->engine_load == a.get_load() && this->flag == a.get_flag() && this->airflow == a.get_airflow()
+					&& this-> throttle_position == a.get_throttle() && this->ltrim == a.get_ltrim() && this->strim == a.get_strim() && this->coolant_tmp == a.get_coolant_tmp()
+					&& this->speed == a.get_speed() && this->intake_tmp == a.get_intake_tmp() && this->fuel_status == a.get_fuel_status();
 			}
 /*
 			std::ostream& operator<<(std::ostream& outputStream){
@@ -101,7 +105,8 @@ namespace{
 	struct engine_info_pickle_suite : boost::python::pickle_suite{
 		static boost:: python::tuple getinitargs(Engine_Info& e){
 			using namespace boost::python;
-			return make_tuple(e.get_rpm(), e.get_load(), e.get_flag());
+			return make_tuple(e.get_rpm(), e.get_load(), e.get_fuel_status(), e.get_coolant_tmp(), e.get_speed(), e.get_intake_tmp(), e.get_airflow(), e.get_throttle(), e.get_ltrim(), 
+				e.get_strim(), e.get_flag());
 		}
 	};
 
