@@ -12,7 +12,6 @@ namespace{
 	std::vector<std::string> parse_input(std::string in){
 		in = std::regex_replace(in, std::regex("\\s\\s+"), "  ");
 		in = std::regex_replace(in, std::regex("(\\s*(-)+\\s+)|\n"), "  ");
-		//std::cout << in << std::endl;
 		std::regex e("\\s\\s");
 		std::sregex_token_iterator iter(in.begin(), in.end(), e, -1);
 		std::sregex_token_iterator end;
@@ -30,7 +29,6 @@ namespace{
 	}
 
 	Engine_Info extract_engine(std::vector<std::string> input){
-		std::cout << "Entering Engine" << std::endl;
 		Engine_Info engine = Engine_Info(0,0,0);
 		//engine.set_flag(0);
 		for(int x = 1; x < input.size(); x+=2){
