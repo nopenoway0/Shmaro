@@ -1,5 +1,7 @@
 #include <unistd.h>
 #include <signal.h>
+#include <monitor_parser.h>
+#include <vector>
 #include <errno.h>
 #include <stdio.h>
 #include <iostream>
@@ -111,8 +113,34 @@ int main(int args, char* argv[]){
 		*/
 		else{
 			std::cout << std::endl << "CONNECTION FOUND" << std::endl;
-			//start scan
+			//start scan	
+			memset(buffer,0,sizeof(buffer));
+			std::vector<std::string> parsed_data;
+			std::vector<std::string> relevant_data;
+		//	std::vecotr<std::string
+			std::cout << "STARTING MONITOR" << std::endl;
+			Engine_Info eng;
+			//break code for loop
+			char error_str3[] = "request failed";
 			write(r_w_pipe[1], "monitor\n", strlen("monitor\n"));		
+			while(strstr(buffer, error_str3) == NULL){
+				memset(buffer,0,sizeof(buffer));
+				relevant_data.clear();
+				read(w_r_pipe[0], buffer, sizeof(buffer));
+				//memset(buffer,0,sizeof(buffer));
+				parsed_data = parse_input(buffer);
+				for(int x = 0; x < parsed_data.size(); x++){
+					if(strstr(parsed_data.at(x).c_str(), "...") == NULL && strstr(parsed_data.at(x).c_str(), ":") == NULL){
+						std::cout << x << ": " << parsed_data.at(x) << std::endl;
+						relevant_data.push_back(parsed_data.at(x));	
+					}
+				}
+				std::cout << ".";
+				std::cout.flush();
+				eng = extract_engine(relevant_data);
+				if(relevant_data.size() > 0) std::cout << "Printing Engine\n" << "RPM: " << eng.get_rpm() << "\nLoad: " << eng.get_load() << std::endl;
+				sleep(1);
+			}
 			// Pull information from terminal here:
 			// Use parser?	
 			// get error codes using "pids" command
