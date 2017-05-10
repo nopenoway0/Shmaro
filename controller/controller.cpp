@@ -100,6 +100,7 @@ int main(int args, char* argv[]){
 			if(strstr(buffer, error_string) != NULL){
 			//	sleep(3);
 				std::cout << std::endl << "No Connection Found. Restarting Scan";
+				waiter += 1;
 				std::cout.flush();
 				write(r_w_pipe[1], "scan\n", strlen("scan\n"));
 			}
@@ -163,6 +164,9 @@ int main(int args, char* argv[]){
 			// Use parser?	
 			// get error codes using "pids" command
 			// ask to clear dtc(optional)
+			eng_buff[0] = Engine_Info();
+			eng_buff[0].set_flag(ENGINE_END);
+			connector.send_to(boost::asio::buffer(eng_buff), main_endpoint);
 		}
 		//quitting here
 		std::cout << std::endl<< "Shutting down Scantool";
@@ -172,6 +176,7 @@ int main(int args, char* argv[]){
 			std::cout.flush();
 			sleep(1);
 		}
+		connector.close();
 		std::cout << std::endl;
 
 	}
