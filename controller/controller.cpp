@@ -9,6 +9,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <boost/asio.hpp>
+#include <boost/array.hpp>
+
+using boost::asio::ip::udp;
 
 int main(int args, char* argv[]){
 	// Instantiate pipes, variables, buffers.
@@ -45,6 +49,10 @@ int main(int args, char* argv[]){
 	}
 	// main process
 	else{
+		boost::asio::io_service io_service;
+		udp::endpoint main_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 12345);
+		udp::socket connector(io_service);
+		connector.open(udp::v4());
 		// Close reading end of 1 pair of pipes and the writing end of the other
 		close(r_w_pipe[0]);
 		close(w_r_pipe[1]);
@@ -113,6 +121,7 @@ int main(int args, char* argv[]){
 		*/
 		else{
 			std::cout << std::endl << "CONNECTION FOUND" << std::endl;
+			boost::array<Engine_Info, 5> eng_buff;
 			//start scan	
 			memset(buffer,0,sizeof(buffer));
 			std::vector<std::string> parsed_data;
@@ -123,6 +132,7 @@ int main(int args, char* argv[]){
 			//break code for loop
 			char error_str3[] = "request failed";
 			write(r_w_pipe[1], "monitor\n", strlen("monitor\n"));		
+			count = 0;
 			while(strstr(buffer, error_str3) == NULL){
 				memset(buffer,0,sizeof(buffer));
 				relevant_data.clear();
@@ -138,7 +148,15 @@ int main(int args, char* argv[]){
 				std::cout << ".";
 				std::cout.flush();
 				eng = extract_engine(relevant_data);
-				if(relevant_data.size() > 0) std::cout << "Printing Engine\n" << "RPM: " << eng.get_rpm() << "\nLoad: " << eng.get_load() << std::endl;
+				//if(relevant_data.size() > 0) std::cout << "Printing Engine\n" << "RPM: " << eng.get_rpm() << "\nLoad: " << eng.get_load() << std::endl;
+				eng_buff[count] = eng;
+				count += 1;
+				if(count > 4){
+					connector.send_to(boost::asio::buffer(eng_buff), main_endpoint);
+					for(int x = 0; x < eng_buff.size(); x++){
+						eng_buff[x] = Engine_Info();
+					}
+				}
 				sleep(1);
 			}
 			// Pull information from terminal here:
