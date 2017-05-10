@@ -29,6 +29,10 @@ boost::asio::io_service io_service;
 udp::resolver resolver(io_service);
 
 int main(int args, char* argv[]){
+	std::string ip_addr_string;
+	if(args > 1) ip_addr_string = argv[1];
+	else ip_addr_string = "127.0.0.1";
+	std::cout << "using ip address " << ip_addr_string;
 	udp::endpoint main_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 12345);
 	udp::socket connector(io_service);
 	connector.open(udp::v4());
@@ -54,7 +58,6 @@ int main(int args, char* argv[]){
 				std::cout << parsed_data.at(x) << std::endl;
 			}*/		
 			eng1 = extract_engine(parsed_data);
-			print_engine(eng1);
 			buffer_to_send[object_count] = eng1;
 			object_count++;
 			if(object_count > 4){
