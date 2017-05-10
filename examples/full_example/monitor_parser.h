@@ -30,7 +30,6 @@ namespace{
 
 	Engine_Info extract_engine(std::vector<std::string> input){
 		Engine_Info engine = Engine_Info(0,0,0);
-		std::cout << std::endl;
 		//engine.set_flag(0);
 		for(int x = 2; x < input.size(); x+=2){
 			std::string temp = input.at(x);
