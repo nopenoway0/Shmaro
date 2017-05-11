@@ -23,7 +23,7 @@ namespace{
 	}*/
 	boost::asio::io_service io_service;
 	udp::resolver resolver(io_service);
-	udp::socket connector(io_service, udp::endpoint(udp::v4(), 12345));
+	udp::socket connector(io_service, udp::endpoint(udp::v6(), 12345));
 	boost::mutex _eng_access;
 	std::vector<Engine_Info> info_list;
 	bool server_done;

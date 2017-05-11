@@ -32,10 +32,12 @@ int main(int args, char* argv[]){
 	std::string ip_addr_string;
 	if(args > 1) ip_addr_string = argv[1];
 	else ip_addr_string = "127.0.0.1";
+	std::cout << ip_addr_string << std::endl;
+	std::cout << boost::asio::ip::address::from_string(ip_addr_string);
 	std::cout << "using ip address " << ip_addr_string;
 	udp::endpoint main_endpoint(boost::asio::ip::address::from_string(ip_addr_string), 12345);
 	udp::socket connector(io_service);
-	connector.open(udp::v4());
+	connector.open(udp::v6());
 	std::ifstream file_to_read;
 	std::string read_data;
 	file_to_read.open("results.txt");

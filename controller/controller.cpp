@@ -52,7 +52,7 @@ int main(int args, char* argv[]){
 		boost::asio::io_service io_service;
 		udp::endpoint main_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 12345);
 		udp::socket connector(io_service);
-		connector.open(udp::v4());
+		connector.open(udp::v6());
 		// Close reading end of 1 pair of pipes and the writing end of the other
 		close(r_w_pipe[0]);
 		close(w_r_pipe[1]);
