@@ -16,6 +16,9 @@ using boost::asio::ip::udp;
 
 int main(int args, char* argv[]){
 	// Instantiate pipes, variables, buffers.
+	std::string my_ip;
+	if(args > 1) my_ip = argv[1];
+	else my_ip = "127.0.0.1";
 	// Make sure all pipes are created correctly before the fork
 	pid_t pid;
 	int r_w_pipe[2];
@@ -50,7 +53,7 @@ int main(int args, char* argv[]){
 	// main process
 	else{
 		boost::asio::io_service io_service;
-		udp::endpoint main_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 12345);
+		udp::endpoint main_endpoint(boost::asio::ip::address::from_string(my_ip), 12345);
 		udp::socket connector(io_service);
 		connector.open(udp::v6());
 		// Close reading end of 1 pair of pipes and the writing end of the other
@@ -149,12 +152,14 @@ int main(int args, char* argv[]){
 				std::cout << ".";
 				std::cout.flush();
 				eng = extract_engine(relevant_data);
-				//if(relevant_data.size() > 0) std::cout << "Printing Engine\n" << "RPM: " << eng.get_rpm() << "\nLoad: " << eng.get_load() << std::endl;
+				if(relevant_data.size() > 0) std::cout << "Printing Engine\n" << "RPM: " << eng.get_rpm() << "\nLoad: " << eng.get_load() << std::endl;
 				eng_buff[count] = eng;
-				count += 1;
+				if(relevant_data.size() > 0) count += 1;
 				if(count > 4){
 					connector.send_to(boost::asio::buffer(eng_buff), main_endpoint);
-					for(int x = 0; x < eng_buff.size(); x++){
+					std::cout.flush();
+					count = 0;
+					for(int x = 0; x < 5; x++){
 						eng_buff[x] = Engine_Info();
 					}
 				}
